@@ -1,0 +1,24 @@
+{
+    "prod": {
+        "app_function": "page.app",
+        "aws_region": "ap-southeast-2",
+        "profile_name": "default",
+        "project_name": "sms-page-pager",
+        "runtime": "python3.6",
+        "s3_bucket": "zappa-???",
+		"environment_variables": {
+            "TWILIO_AUTH_TOKEN" : "<twilio-auth-token>",
+            "SES_ID" : "<ses-user-id-number>",
+            "SES_PASSWORD" : "<ses-user-password>"
+        },
+        "extra_permissions": [{
+            "Effect" : "Allow",
+            "Action": "dynamodb:*",
+            "Resource": [
+                "arn:aws:dynamodb:ap-southeast-2:<awsid>:table/sms-page-prod-contact",
+                "arn:aws:dynamodb:ap-southeast-2:<awsid>:table/sms-page-prod-unit",
+                "arn:aws:dynamodb:ap-southeast-2:<awsid>:table/sms-page-prod-page_log"
+            ]
+        }]
+    }
+}

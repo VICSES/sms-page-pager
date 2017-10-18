@@ -1,0 +1,6 @@
+wheel
+flask
+twilio
+vicses.viper
+boto3
+zappa

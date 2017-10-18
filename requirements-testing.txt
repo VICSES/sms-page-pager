@@ -1,0 +1,7 @@
+wheel
+pytest
+moto
+pylint
+pycodestyle
+python_coveralls
+pytest-cov
