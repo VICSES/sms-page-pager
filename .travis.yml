@@ -6,6 +6,6 @@ install:
     - pip install -r requirements.txt
     - pip install -r requirements-testing.txt
 script:
-    PYTHONPATH=$PWD:$PYTHONPATH pytest --cov web
+    PYTHONPATH=$PWD:$PYTHONPATH pytest --cov page.py test_page.py
 after_success:
     coveralls
