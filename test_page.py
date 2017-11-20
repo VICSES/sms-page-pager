@@ -163,3 +163,34 @@ def test_db_lookups(client, contact_table, unit_table, mock_viper):
     assert(mock_viper.mock_calls == expected_calls)
 
     # TODO: Test page_log entry
+
+def test_mms(client, contact_table, unit_table, mock_viper):
+    # MMS messages in Australia are delivered to twilio as an SMS with
+    # a link.
+    # Below is a captured Telstra message, delivered via Twilio originating
+    # from an Optus network mobile. I am unsure if they will all be in the
+    # Telstra format.
+    # Desired behaviour is to send an error SMS reply, do not send a page.
+    telstra_mms = "You have a new MMS Picture or Video Message. To view your message, go to http://telstra.com/mmsview & enter User ID:61437867737 and Password:048jnd within 14 days"
+
+    data = { 'Body': telstra_mms, 'From': '123' }
+    token = 'ABC'
+    page.os.environ['TWILIO_AUTH_TOKEN'] = token
+    validator = RequestValidator(token)
+    sig = validator.compute_signature('http://localhost/', data)
+    headers = {'X-TWILIO-SIGNATURE' : sig}
+
+    contact_table.put_item({
+        'phone_number' : {'S' : '123'},
+        'unit'         : {'S' : 'TestData'},
+        'member_id'    : {'N' :12345},
+    })
+    unit_table.put_item({
+        'name' : {'S': 'TestData'},
+        'capcode' : {'N': 1111}
+    })
+
+    bounce = client.post('/', data=data, headers=headers)
+    assert(bounce.status_code == 200)
+    assert(b"This service does not support MMS messages" in bounce.data)
+    assert(mock_viper.mock_calls == [])

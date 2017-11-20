@@ -109,6 +109,9 @@ def page():
     if unit is None:
         return twiml_error("Error retrieving unit details, contact the systems administrator.")
 
+    if body.startswith("You have a new MMS"):
+        return twiml_error("This service does not support MMS messages.")
+
     insert_page_log(contact["unit"], phone_number, body)
 
     viper = Viper(
